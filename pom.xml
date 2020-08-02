@@ -5,7 +5,7 @@
 
     <groupId>com.github.ryneal</groupId>
     <artifactId>hexagonal-domain</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>hexagonal-domain</name>
     <url>https://github.com/ryneal/hexagonal-domain</url>
@@ -113,7 +113,7 @@
         <connection>scm:git:git://github.com/ryneal/hexagonal-domain.git</connection>
         <developerConnection>scm:git:git@github.com:ryneal/hexagonal-domain.git</developerConnection>
         <url>https://github.com/ryneal/hexagonal-domain</url>
-        <tag>HEAD</tag>
+        <tag>0.0.1</tag>
     </scm>
 
 
