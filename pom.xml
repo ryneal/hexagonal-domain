@@ -9,6 +9,13 @@
 
     <name>hexagonal-domain</name>
     <url>https://github.com/ryneal/hexagonal-domain</url>
+    <description>A library designed to speed development of the domain layer of hexagonal architectures</description>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://www.opensource.org/licenses/mit-license.php</url>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
