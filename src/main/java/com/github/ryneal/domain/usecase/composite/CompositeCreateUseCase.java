@@ -20,8 +20,7 @@ public final class CompositeCreateUseCase<T extends Identifiable<I> & Categorica
 
     @Override
     public Optional<T> create(T t) {
-        return Optional.ofNullable(createPorts)
-                .orElseGet(Collections::emptyList)
+        return this.createPorts
                 .stream()
                 .filter(port -> port.isCategory(t.getCategory()))
                 .flatMap(port -> port.create(t).stream())
