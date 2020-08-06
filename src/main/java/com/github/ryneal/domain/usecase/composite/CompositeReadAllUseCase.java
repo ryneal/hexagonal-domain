@@ -9,6 +9,7 @@ import com.github.ryneal.domain.usecase.ReadAllUseCase;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public final class CompositeReadAllUseCase<T extends Identifiable<I> & Categorical<U>, I, U>
         implements ReadAllUseCase<T, I> {
@@ -29,8 +30,8 @@ public final class CompositeReadAllUseCase<T extends Identifiable<I> & Categoric
                 .stream()
                 .filter(port -> this.supportedCategories.stream().anyMatch(port::supportsCategory))
                 .map(ReadAllPort::readAll)
-                .findFirst()
-                .orElseGet(Collections::emptyList);
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
 }

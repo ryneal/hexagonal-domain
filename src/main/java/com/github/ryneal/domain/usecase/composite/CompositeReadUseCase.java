@@ -8,6 +8,8 @@ import com.github.ryneal.domain.usecase.ReadUseCase;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class CompositeReadUseCase<T extends Identifiable<I> & Categorical<U>, I, U>
         implements ReadUseCase<T, I> {
