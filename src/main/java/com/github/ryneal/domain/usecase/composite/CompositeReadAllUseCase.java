@@ -27,7 +27,7 @@ public final class CompositeReadAllUseCase<T extends Identifiable<I> & Categoric
         return Optional.ofNullable(this.readAllPorts)
                 .orElseGet(Collections::emptyList)
                 .stream()
-                .filter(port -> this.supportedCategories.stream().anyMatch(port::isCategory))
+                .filter(port -> this.supportedCategories.stream().anyMatch(port::supportsCategory))
                 .map(ReadAllPort::readAll)
                 .findFirst()
                 .orElseGet(Collections::emptyList);

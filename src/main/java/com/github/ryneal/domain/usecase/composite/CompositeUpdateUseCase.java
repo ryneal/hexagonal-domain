@@ -26,7 +26,7 @@ public final class CompositeUpdateUseCase<T extends Identifiable<I> & Categorica
         return Optional.ofNullable(this.updatePorts)
                 .orElseGet(Collections::emptyList)
                 .stream()
-                .filter(port -> this.supportedCategories.stream().anyMatch(port::isCategory))
+                .filter(port -> this.supportedCategories.stream().anyMatch(port::supportsCategory))
                 .flatMap(port -> port.read(id)
                         .flatMap(found -> port.update(id, t)).stream())
                 .findFirst();

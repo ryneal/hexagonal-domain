@@ -22,7 +22,7 @@ public final class CompositeCreateUseCase<T extends Identifiable<I> & Categorica
     public Optional<T> create(T t) {
         return this.createPorts
                 .stream()
-                .filter(port -> port.isCategory(t.getCategory()))
+                .filter(port -> port.supportsCategory(t.getCategory()))
                 .flatMap(port -> port.create(t).stream())
                 .findFirst();
     }

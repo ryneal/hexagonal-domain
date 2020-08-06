@@ -25,7 +25,7 @@ public final class CompositeDeleteUseCase<T extends Identifiable<I> & Categorica
                 .stream()
                 .filter(port -> port.read(id)
                         .map(Categorical::getCategory)
-                        .filter(port::isCategory)
+                        .filter(port::supportsCategory)
                         .isPresent())
                 .forEach(port -> port.delete(id));
     }

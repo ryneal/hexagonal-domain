@@ -5,5 +5,5 @@ import com.github.ryneal.domain.entity.Identifiable;
 import com.github.ryneal.domain.port.UpdatePort;
 
 public interface CategorizedUpdatePort<T extends Identifiable<I> & Categorical<U>, I, U>
-        extends UpdatePort<T, I>, Categorized<U> {
+        extends UpdatePort<T, I>, CategorySupport<U> {
 }

@@ -6,5 +6,5 @@ import com.github.ryneal.domain.port.DeletePort;
 import com.github.ryneal.domain.port.ReadPort;
 
 public interface CategorizedDeletePort<T extends Identifiable<I> & Categorical<U>, I, U>
-        extends DeletePort<T, I>, Categorized<U>, ReadPort<T, I> {
+        extends DeletePort<T, I>, CategorySupport<U>, ReadPort<T, I> {
 }
