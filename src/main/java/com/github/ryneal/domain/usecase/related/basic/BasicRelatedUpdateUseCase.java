@@ -24,9 +24,9 @@ public final class BasicRelatedUpdateUseCase<T extends Related<I, U, J>, I, U ex
     @Override
     public Optional<T> update(J parentId, I id, T t) {
         return this.readUseCase.read(id)
-                .filter(child -> Objects.nonNull(t.getParent()))
-                .filter(child -> t.getParent().getId() == parentId)
-                .flatMap(child -> this.updateUseCase.update(id, child));
+                .map(Related::getParent)
+                .filter(parent -> parent.getId() == parentId)
+                .flatMap(child -> this.updateUseCase.update(id, t));
     }
 
 }
