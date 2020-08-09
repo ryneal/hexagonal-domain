@@ -1,8 +1,7 @@
 package com.github.ryneal.domain.usecase.composite;
 
 import com.github.ryneal.domain.entity.BasicTestEntity;
-import com.github.ryneal.domain.entity.TestCategory;
-import com.github.ryneal.domain.port.categorical.CategorizedCreatePort;
+import com.github.ryneal.domain.port.CreatePort;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,14 +23,14 @@ import static org.mockito.Mockito.when;
 class CompositeCreateUseCaseTest {
 
     @Mock
-    private CategorizedCreatePort<BasicTestEntity, Integer, TestCategory> firstPort;
+    private CreatePort<BasicTestEntity, Integer> firstPort;
     @Mock
-    private CategorizedCreatePort<BasicTestEntity, Integer, TestCategory> secondPort;
-    private CompositeCreateUseCase compositeCreateUseCase;
+    private CreatePort<BasicTestEntity, Integer> secondPort;
+    private CompositeCreateUseCase<BasicTestEntity, Integer> compositeCreateUseCase;
 
     @BeforeEach
     void setUp() {
-        this.compositeCreateUseCase = new CompositeCreateUseCase(Arrays.asList(this.firstPort, this.secondPort));
+        this.compositeCreateUseCase = new CompositeCreateUseCase<>(Arrays.asList(this.firstPort, this.secondPort));
     }
 
     @AfterEach
@@ -40,37 +39,14 @@ class CompositeCreateUseCaseTest {
     }
 
     @Test
-    void shouldReturnEmptyWhenPortsDoNotMatchCategory() {
-        BasicTestEntity entity = mock(BasicTestEntity.class);
-        TestCategory category = mock(TestCategory.class);
-        when(entity.getCategory()).thenReturn(category);
-        when(this.firstPort.supportsCategory(category)).thenReturn(false);
-        when(this.secondPort.supportsCategory(category)).thenReturn(false);
-
-        Optional actual = this.compositeCreateUseCase.create(entity);
-
-        assertThat(actual).isEmpty();
-        verify(entity, times(2)).getCategory();
-        verify(this.firstPort).supportsCategory(category);
-        verify(this.secondPort).supportsCategory(category);
-    }
-
-    @Test
     void shouldReturnEmptyWhenAllPortsReturnEmpty() {
         BasicTestEntity entity = mock(BasicTestEntity.class);
-        TestCategory category = mock(TestCategory.class);
-        when(entity.getCategory()).thenReturn(category);
-        when(this.firstPort.supportsCategory(category)).thenReturn(true);
-        when(this.secondPort.supportsCategory(category)).thenReturn(true);
         when(this.firstPort.create(entity)).thenReturn(Optional.empty());
         when(this.secondPort.create(entity)).thenReturn(Optional.empty());
 
-        Optional actual = this.compositeCreateUseCase.create(entity);
+        Optional<BasicTestEntity> actual = this.compositeCreateUseCase.create(entity);
 
         assertThat(actual).isEmpty();
-        verify(entity, times(2)).getCategory();
-        verify(this.firstPort).supportsCategory(category);
-        verify(this.secondPort).supportsCategory(category);
         verify(this.firstPort).create(entity);
         verify(this.secondPort).create(entity);
     }
@@ -79,16 +55,12 @@ class CompositeCreateUseCaseTest {
     void shouldNotCallSecondServiceWhenFirstServiceReturns() {
         BasicTestEntity entity = mock(BasicTestEntity.class);
         BasicTestEntity expected = mock(BasicTestEntity.class);
-        TestCategory category = mock(TestCategory.class);
-        when(entity.getCategory()).thenReturn(category);
-        when(this.firstPort.supportsCategory(category)).thenReturn(true);
         when(this.firstPort.create(entity)).thenReturn(Optional.of(expected));
 
-        Optional actual = this.compositeCreateUseCase.create(entity);
+        Optional<BasicTestEntity> actual = this.compositeCreateUseCase.create(entity);
 
         assertThat(actual).hasValue(expected);
         verify(entity).getCategory();
-        verify(this.firstPort).supportsCategory(category);
         verify(this.firstPort).create(entity);
     }
 
@@ -96,19 +68,12 @@ class CompositeCreateUseCaseTest {
     void shouldCallSecondServiceWhenFirstServiceReturnsEmpty() {
         BasicTestEntity entity = mock(BasicTestEntity.class);
         BasicTestEntity expected = mock(BasicTestEntity.class);
-        TestCategory category = mock(TestCategory.class);
-        when(entity.getCategory()).thenReturn(category);
-        when(this.firstPort.supportsCategory(category)).thenReturn(true);
-        when(this.secondPort.supportsCategory(category)).thenReturn(true);
         when(this.firstPort.create(entity)).thenReturn(Optional.empty());
         when(this.secondPort.create(entity)).thenReturn(Optional.of(expected));
 
-        Optional actual = this.compositeCreateUseCase.create(entity);
+        Optional<BasicTestEntity> actual = this.compositeCreateUseCase.create(entity);
 
         assertThat(actual).hasValue(expected);
-        verify(entity, times(2)).getCategory();
-        verify(this.firstPort).supportsCategory(category);
-        verify(this.secondPort).supportsCategory(category);
         verify(this.firstPort).create(entity);
         verify(this.secondPort).create(entity);
     }

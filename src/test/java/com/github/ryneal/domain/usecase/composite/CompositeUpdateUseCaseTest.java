@@ -1,8 +1,7 @@
 package com.github.ryneal.domain.usecase.composite;
 
 import com.github.ryneal.domain.entity.BasicTestEntity;
-import com.github.ryneal.domain.entity.TestCategory;
-import com.github.ryneal.domain.port.categorical.CategorizedUpdatePort;
+import com.github.ryneal.domain.port.UpdatePort;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,52 +22,32 @@ import static org.mockito.Mockito.when;
 class CompositeUpdateUseCaseTest {
 
     @Mock
-    private CategorizedUpdatePort<BasicTestEntity, Integer, TestCategory> firstPort;
+    private UpdatePort<BasicTestEntity, Integer> firstPort;
     @Mock
-    private CategorizedUpdatePort<BasicTestEntity, Integer, TestCategory> secondPort;
-    @Mock
-    private TestCategory supportedCategory;
-    private CompositeUpdateUseCase<BasicTestEntity, Integer, TestCategory> compositeUpdateUseCase;
+    private UpdatePort<BasicTestEntity, Integer> secondPort;
+
+    private CompositeUpdateUseCase<BasicTestEntity, Integer> compositeUpdateUseCase;
 
     @BeforeEach
     void setUp() {
-        this.compositeUpdateUseCase = new CompositeUpdateUseCase(Arrays.asList(this.firstPort, this.secondPort), Collections.singletonList(this.supportedCategory));
+        this.compositeUpdateUseCase = new CompositeUpdateUseCase(Arrays.asList(this.firstPort, this.secondPort));
     }
 
     @AfterEach
     void tearDown() {
-        verifyNoMoreInteractions(this.firstPort, this.secondPort, this.supportedCategory);
-    }
-
-    @Test
-    void shouldReturnEmptyWhenBothPortsDoNotSupportCategory() {
-        BasicTestEntity updateEntity = mock(BasicTestEntity.class);
-        Integer id = 1;
-        when(this.firstPort.supportsCategory(this.supportedCategory)).thenReturn(false);
-        when(this.secondPort.supportsCategory(this.supportedCategory)).thenReturn(false);
-
-        Optional<BasicTestEntity> actual = this.compositeUpdateUseCase.update(id, updateEntity);
-
-        assertThat(actual).isEmpty();
-        verify(this.firstPort).supportsCategory(this.supportedCategory);
-        verify(this.secondPort).supportsCategory(this.supportedCategory);
-        verifyNoMoreInteractions(updateEntity);
+        verifyNoMoreInteractions(this.firstPort, this.secondPort);
     }
 
     @Test
     void shouldReturnEmptyWhenBothPortsDoNotFindEntity() {
         BasicTestEntity updateEntity = mock(BasicTestEntity.class);
         Integer id = 1;
-        when(this.firstPort.supportsCategory(this.supportedCategory)).thenReturn(true);
-        when(this.secondPort.supportsCategory(this.supportedCategory)).thenReturn(true);
         when(this.firstPort.read(id)).thenReturn(Optional.empty());
         when(this.secondPort.read(id)).thenReturn(Optional.empty());
 
         Optional<BasicTestEntity> actual = this.compositeUpdateUseCase.update(id, updateEntity);
 
         assertThat(actual).isEmpty();
-        verify(this.firstPort).supportsCategory(this.supportedCategory);
-        verify(this.secondPort).supportsCategory(this.supportedCategory);
         verify(this.firstPort).read(id);
         verify(this.secondPort).read(id);
         verifyNoMoreInteractions(updateEntity);
@@ -80,8 +58,6 @@ class CompositeUpdateUseCaseTest {
         BasicTestEntity updateEntity = mock(BasicTestEntity.class);
         BasicTestEntity foundEntity = mock(BasicTestEntity.class);
         Integer id = 1;
-        when(this.firstPort.supportsCategory(this.supportedCategory)).thenReturn(true);
-        when(this.secondPort.supportsCategory(this.supportedCategory)).thenReturn(true);
         when(this.firstPort.read(id)).thenReturn(Optional.of(foundEntity));
         when(this.secondPort.read(id)).thenReturn(Optional.of(foundEntity));
         when(this.firstPort.update(id, updateEntity)).thenReturn(Optional.empty());
@@ -90,8 +66,6 @@ class CompositeUpdateUseCaseTest {
         Optional<BasicTestEntity> actual = this.compositeUpdateUseCase.update(id, updateEntity);
 
         assertThat(actual).isEmpty();
-        verify(this.firstPort).supportsCategory(this.supportedCategory);
-        verify(this.secondPort).supportsCategory(this.supportedCategory);
         verify(this.firstPort).read(id);
         verify(this.secondPort).read(id);
         verify(this.firstPort).update(id, updateEntity);
@@ -105,8 +79,6 @@ class CompositeUpdateUseCaseTest {
         BasicTestEntity foundEntity = mock(BasicTestEntity.class);
         BasicTestEntity expected = mock(BasicTestEntity.class);
         Integer id = 1;
-        when(this.firstPort.supportsCategory(this.supportedCategory)).thenReturn(true);
-        when(this.secondPort.supportsCategory(this.supportedCategory)).thenReturn(true);
         when(this.firstPort.read(id)).thenReturn(Optional.of(foundEntity));
         when(this.secondPort.read(id)).thenReturn(Optional.of(foundEntity));
         when(this.firstPort.update(id, updateEntity)).thenReturn(Optional.empty());
@@ -115,8 +87,6 @@ class CompositeUpdateUseCaseTest {
         Optional<BasicTestEntity> actual = this.compositeUpdateUseCase.update(id, updateEntity);
 
         assertThat(actual).hasValue(expected);
-        verify(this.firstPort).supportsCategory(this.supportedCategory);
-        verify(this.secondPort).supportsCategory(this.supportedCategory);
         verify(this.firstPort).read(id);
         verify(this.secondPort).read(id);
         verify(this.firstPort).update(id, updateEntity);

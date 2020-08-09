@@ -1,24 +1,19 @@
 package com.github.ryneal.domain.usecase.composite;
 
-import com.github.ryneal.domain.entity.Categorical;
 import com.github.ryneal.domain.entity.Identifiable;
-import com.github.ryneal.domain.port.categorical.CategorizedUpdatePort;
+import com.github.ryneal.domain.port.UpdatePort;
 import com.github.ryneal.domain.usecase.UpdateUseCase;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public final class CompositeUpdateUseCase<T extends Identifiable<I> & Categorical<U>, I, U>
-        implements UpdateUseCase<T, I> {
+public final class CompositeUpdateUseCase<T extends Identifiable<I>, I> implements UpdateUseCase<T, I> {
 
-    private final List<CategorizedUpdatePort<T, I, U>> updatePorts;
-    private final List<U> supportedCategories;
+    private final List<UpdatePort<T, I>> updatePorts;
 
-    public CompositeUpdateUseCase(List<CategorizedUpdatePort<T, I, U>> updatePorts,
-                                  List<U> supportedCategories) {
+    public CompositeUpdateUseCase(List<UpdatePort<T, I>> updatePorts) {
         this.updatePorts = Collections.unmodifiableList(updatePorts);
-        this.supportedCategories = Collections.unmodifiableList(supportedCategories);
     }
 
     @Override
@@ -26,7 +21,6 @@ public final class CompositeUpdateUseCase<T extends Identifiable<I> & Categorica
         return Optional.ofNullable(this.updatePorts)
                 .orElseGet(Collections::emptyList)
                 .stream()
-                .filter(port -> this.supportedCategories.stream().anyMatch(port::supportsCategory))
                 .flatMap(port -> port.read(id)
                         .flatMap(found -> port.update(id, t)).stream())
                 .findFirst();

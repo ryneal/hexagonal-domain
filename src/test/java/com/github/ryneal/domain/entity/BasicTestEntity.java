@@ -1,14 +1,12 @@
 package com.github.ryneal.domain.entity;
 
-public class BasicTestEntity implements Identifiable<Integer>, Categorical<TestCategory>, Related<Integer, ParentTestEntity, String> {
+public class BasicTestEntity implements Identifiable<Integer>, Related<Integer, ParentTestEntity, String> {
 
     private Integer id;
-    private TestCategory category;
     private ParentTestEntity parent;
 
-    public BasicTestEntity(Integer id, TestCategory category, ParentTestEntity parent) {
+    public BasicTestEntity(Integer id, ParentTestEntity parent) {
         this.id = id;
-        this.category = category;
         this.parent = parent;
     }
 
@@ -32,8 +30,4 @@ public class BasicTestEntity implements Identifiable<Integer>, Categorical<TestC
         this.parent = parent;
     }
 
-    @Override
-    public TestCategory getCategory() {
-        return this.category;
-    }
 }
