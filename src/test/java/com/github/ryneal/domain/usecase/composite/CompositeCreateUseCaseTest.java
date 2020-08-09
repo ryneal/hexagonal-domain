@@ -60,7 +60,6 @@ class CompositeCreateUseCaseTest {
         Optional<BasicTestEntity> actual = this.compositeCreateUseCase.create(entity);
 
         assertThat(actual).hasValue(expected);
-        verify(entity).getCategory();
         verify(this.firstPort).create(entity);
     }
 
