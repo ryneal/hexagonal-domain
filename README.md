@@ -13,6 +13,6 @@ The classes available in the library allow quick creation of entities with commo
 <dependency>
     <groupId>com.github.ryneal</groupId>
     <artifactId>hexagonal-domain</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.3</version>
 </dependency>
 ```
